@@ -2,91 +2,16 @@ from os import environ
 
 
 SESSION_CONFIGS = [
-    # dict(
-    #     name='survey', app_sequence=['survey', 'payment_info'], num_demo_participants=1
-    # ),
-    # dict(
-    #     name='certainty', app_sequence=['certainty'],
-    #     num_demo_participants=2
-    # ),
     dict(
-        name='mpl', app_sequence=['mpl'],
-        num_demo_participants=1,
-        lottery_a = 280, 
-        lottery_b_hi = 500,
-        lottery_b_lo = 100, 
-    ),
-    dict(
-        name='demo', app_sequence=['demographics'],
-        num_demo_participants=1,
-    ),
-    dict(
-        name='search_experiment_1', app_sequence=['search','mpl','demographics'],
-        num_demo_participants=1,
-        # config_file = "search_pilot.csv",
-        value_high = 500,
-        value_low = 100,
-        search_cost = 5,
-        lottery_a = 280, 
-        lottery_b_hi = 500,
-        lottery_b_lo = 100, 
-        certainty = True, 
-        random = True,
-    ),
-    dict(
-        name='search_experiment_2', app_sequence=['search','mpl','demographics'],
-        num_demo_participants=1,
-        # config_file = "search_pilot.csv",
-        value_high = 500,
-        value_low = 100,
-        search_cost = 5,
-        lottery_a = 280, 
-        lottery_b_hi = 500,
-        lottery_b_lo = 100, 
-        certainty = False, 
-        random = True,
-    ),
-    dict(
-        name='search_experiment_3', app_sequence=['search','mpl','demographics'],
-        num_demo_participants=1,
-        # config_file = "search_pilot.csv",
-        value_high = 200,
-        value_low = 100,
-        search_cost = 5,
-        lottery_a = 145, 
-        lottery_b_hi = 200,
-        lottery_b_lo = 100, 
-        certainty = True, 
-        random = True,
-    ),
-    # dict(
-    #     name='real_effort_task', 
-    #     app_sequence=['real_effort_task'],
-    #     num_demo_participants=2,
-    #     policy = True,
-    #     min_wage = 80,
-    #     wage_low = 10,
-    #     wage_high = 100,
-    # ),
-    # dict(
-    #     name='encoding', 
-    #     app_sequence=['encoding'],
-    #     num_demo_participants=1,
-    # ),
-    # dict(
-    #     name='real_effort_wage', 
-    #     app_sequence=['encoding_simple', 'real_effort_task', 'encoding'],
-    #     num_demo_participants=2,
-    #     policy = True,
-    #     min_wage = 80,
-    #     wage_low = 10,
-    #     wage_high = 100,
-    # ),
-    dict(
-        name='min_wage_real_effort',
-        app_sequence=['encoding_simple', 'min_wage_real_effort'],
+        name='min_wage_removal',
+        app_sequence=['encoding_simple', 'min_wage_removal', 'survey_mwre'],
         num_demo_participants=2,
-    )
+    ),
+    dict(
+        name='min_wage_implementation',
+        app_sequence=['encoding_simple', 'min_wage_implementation', 'survey_mwre'],
+        num_demo_participants=2,
+    ),
 ]
 
 PARTICIPANT_FIELDS = ['match', 'encoding_payoff']
@@ -119,14 +44,13 @@ ROOMS = [
         display_name='Room for live demo (no participant labels)'
     ),
     dict(
-        name='sequential_search',
-        display_name='Sequential Search',
+        name='min_wage_removal', 
+        display_name='Room for min wage removal treatment',
         participant_label_file='_rooms/participant_label.txt',
-        # use_secure_urls=True
     ),
     dict(
-        name='min_wage', 
-        display_name='Room for min wage real effort',
+        name='min_wage_addition', 
+        display_name='Room for min wage implementation treatment',
         participant_label_file='_rooms/participant_label.txt',
     ),
 ]

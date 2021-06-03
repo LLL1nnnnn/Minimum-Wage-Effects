@@ -2,17 +2,22 @@
 {% load otree static %}
 
 {% block styles %}
-    <link href="{% static 'encoding_simple/css/custom.css' %}" rel="stylesheet">
+    <link href="{% static 'min_wage_real_effort/css/custom.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block title %}
-    Practice Encoding Task
+    Encoding Task
 {% endblock %}
 
 {% block content %}
     <p>
-        This is a practice round. 
+        This is round <b>{{ player.round_number }}</b>. 
     </p>
+    {% if player.id_in_group == 2 && group.decision == "Accept" %}
+    <p>
+        After completing this task, you will be paid {{ group.offer }}. 
+    </p>
+    {% endif %}
 
     <table class="table">
         <tr>
@@ -73,7 +78,6 @@
             <th>{{ form.num_entered_15 }}</th>
         </tr>
     </table>
-
     
     <table class="table">
         <thead>
