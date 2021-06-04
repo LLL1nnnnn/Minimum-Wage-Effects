@@ -1,10 +1,16 @@
 {% extends "global/Page.html" %}
+{% block styles %}
+    <link href="{% static 'min_wage_effect/css/custom.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block title %}
     Matching Results
 {% endblock %}
 
 {% block content %}
+    <p>
+        This is round <b>{{ player.round_number }}</b>. 
+    </p>
 
     {% if player.id_in_group == 1 %}
         <p>
@@ -37,6 +43,24 @@
             {% endif %}
         </p>
     {% endif %}
+
+    <h2>Round history</h2>
+    <table class="table">
+        <tr>
+            <th>Round</th>
+            <th>Wage Offer</th>
+            <th>Decision</th>
+            <th>Payoff</th>
+        </tr>
+        {% for p in player_in_previous_rounds %}
+            <tr>
+                <td>{{ p.round_number }}</td>
+                <td>{{ p.group.offer }}</td>
+                <td>{{ p.group.decision }}</td>
+                <td>{{ p.payoff }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 
     Please click on Next button when you are ready to start the actual word encoding task. 
 

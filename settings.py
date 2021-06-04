@@ -4,13 +4,17 @@ from os import environ
 SESSION_CONFIGS = [
     dict(
         name='min_wage_removal',
-        app_sequence=['encoding_simple', 'min_wage_removal', 'survey_mwre'],
+        app_sequence=['encoding_simple', 'min_wage_effect', 'survey_mwre'],
         num_demo_participants=2,
+        removal=True,
+        implementation=False,
     ),
     dict(
         name='min_wage_implementation',
-        app_sequence=['encoding_simple', 'min_wage_implementation', 'survey_mwre'],
+        app_sequence=['encoding_simple', 'min_wage_effect', 'survey_mwre'],
         num_demo_participants=2,
+        removal=False,
+        implementation=True,
     ),
 ]
 

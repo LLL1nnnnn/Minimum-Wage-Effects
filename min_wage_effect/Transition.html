@@ -1,0 +1,23 @@
+{% extends "global/Page.html" %}
+
+{% block title %}
+    Announcement
+{% endblock %}
+
+{% block content %}
+    {% if removal == True %}
+        <p>
+            Starting now, the <b>Minimum Wage</b> policy is removed. Please adjust your decisions accordingly. 
+        </p>
+    {% elif implementation == True %}
+        <p>
+            Starting now, the <b>Minimum Wage</b> policy is implemented. Please adjust your decisions accordingly. 
+        </p>
+    {% endif %}
+    <p>
+        Please click on Next button if you are ready to proceed. 
+    </p>
+ 
+    {% next_button %}
+
+{% endblock %}

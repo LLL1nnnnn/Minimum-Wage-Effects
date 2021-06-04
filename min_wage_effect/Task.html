@@ -2,7 +2,7 @@
 {% load otree static %}
 
 {% block styles %}
-    <link href="{% static 'min_wage_real_effort/css/custom.css' %}" rel="stylesheet">
+    <link href="{% static 'min_wage_effect/css/custom.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block title %}
@@ -16,6 +16,9 @@
     {% if player.id_in_group == 2 && group.decision == "Accept" %}
     <p>
         After completing this task, you will be paid {{ group.offer }}. 
+    </p>
+    <p>
+        Please encode as many letters as you can. 
     </p>
     {% endif %}
 

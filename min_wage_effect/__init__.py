@@ -13,7 +13,7 @@ Minimum Wage and Real Effort Task of Encoding Letters
 
 
 class Constants(BaseConstants):
-    name_in_url = 'min_wage_removal'
+    name_in_url = 'min_wage_effect'
     num_rounds = 20
     alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     point_per_correct_letter = c(30)
@@ -22,7 +22,7 @@ class Constants(BaseConstants):
     wage_low = c(0)
     min_wage = c(220) 
     base_revenue = c(100)
-    instructions_template = 'min_wage_removal/instructions.html'
+    instructions_template = 'min_wage_effect/instructions.html'
 
 
 class Subsession(BaseSubsession):
@@ -178,16 +178,17 @@ def set_payoffs(group: Group):
     employee = group.get_player_by_id(2)
     group.entry = 0
     group.correct_entry = 0
-    for i in range(1, 16): 
-        entry = 'num_entered_' + str(i)
-        correct = 'correct_num_' + str(i)
-        if getattr(employee, entry):
-            group.entry += 1
-        if getattr(employee, entry) == getattr(employee, correct): 
-            group.correct_entry += 1
-        else:
-            group.correct_entry += 0
+
     if group.decision == 'Accept': 
+        for i in range(1, 16): 
+            entry = 'num_entered_' + str(i)
+            correct = 'correct_num_' + str(i)
+            if getattr(employee, entry):
+                group.entry += 1
+            if getattr(employee, entry) == getattr(employee, correct): 
+                group.correct_entry += 1
+            else:
+                group.correct_entry += 0
         employer.payoff = Constants.base_revenue + Constants.point_per_correct_letter * group.correct_entry - group.offer
         employee.payoff = group.offer 
     else: 
@@ -205,10 +206,16 @@ class Introduction_Wage(Page):
 
     @staticmethod
     def vars_for_template(player: Player):
-        if player.round_number <= 10: 
-            player.group.policy = True
-        else: 
-            player.group.policy = False 
+        if player.session.config['removal'] == True:
+            if player.round_number <= 10: 
+                player.group.policy = True
+            else: 
+                player.group.policy = False 
+        elif player.session.config['implementation'] == True:
+            if player.round_number > 10: 
+                player.group.policy = True
+            else: 
+                player.group.policy = False 
 
         return {
             'wage_low': Constants.wage_low, 
@@ -221,16 +228,24 @@ class Introduction_Wage(Page):
 
 
 class Transition(Page):
+    timeout_seconds = 15
 
     def is_displayed(self):
         return self.round_number == int(Constants.num_rounds / 2 + 1)
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return {
+            'removal': player.session.config['removal'],
+            'implementation': player.session.config['implementation'], 
+        }
 
 
 
 class Offer(Page):
     """This page is only for employer
     employer sends wage offer to employee"""
-
+    # timeout_seconds = 60
     form_model = 'group'
     form_fields = ['offer']
 
@@ -251,10 +266,16 @@ class Offer(Page):
 
     @staticmethod
     def vars_for_template(player: Player):
-        if player.round_number <= 10: 
-            player.group.policy = True
-        else: 
-            player.group.policy = False 
+        if player.session.config['removal'] == True:
+            if player.round_number <= 10: 
+                player.group.policy = True
+            else: 
+                player.group.policy = False 
+        elif player.session.config['implementation'] == True:
+            if player.round_number > 10: 
+                player.group.policy = True
+            else: 
+                player.group.policy = False 
 
         return {
             'wage_low': Constants.wage_low, 
@@ -263,11 +284,13 @@ class Offer(Page):
             'min_wage': Constants.min_wage, 
             'point_per_correct_letter': Constants.point_per_correct_letter,
             'base_revenue': Constants.base_revenue, 
+            'player_in_previous_rounds': player.in_previous_rounds(),
         }
 
 class Reservation(Page):
     """This page is only for employee
     employee sets reservation wage"""
+    # timeout_seconds = 60
 
     form_model = 'group'
     form_fields = ['reservation']
@@ -289,10 +312,16 @@ class Reservation(Page):
     
     @staticmethod
     def vars_for_template(player: Player):
-        if player.round_number <= 10: 
-            player.group.policy = True
-        else: 
-            player.group.policy = False 
+        if player.session.config['removal'] == True:
+            if player.round_number <= 10: 
+                player.group.policy = True
+            else: 
+                player.group.policy = False 
+        elif player.session.config['implementation'] == True:
+            if player.round_number > 10: 
+                player.group.policy = True
+            else: 
+                player.group.policy = False 
 
         return {
             'wage_low': Constants.wage_low, 
@@ -301,6 +330,7 @@ class Reservation(Page):
             'min_wage': Constants.min_wage, 
             'point_per_correct_letter': Constants.point_per_correct_letter,
             'base_revenue': Constants.base_revenue, 
+            'player_in_previous_rounds': player.in_previous_rounds(),
         }
 
 class DecisionWaitPage(WaitPage):
@@ -309,6 +339,7 @@ class DecisionWaitPage(WaitPage):
 
 class Results_Wage(Page):
     """This page displays the earnings of each player"""
+    timeout_seconds = 15
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -328,6 +359,7 @@ class Results_Wage(Page):
             'match': player.participant.match, 
             'point_per_correct_letter': Constants.point_per_correct_letter, 
             'base_revenue': Constants.base_revenue, 
+            'player_in_previous_rounds': player.in_previous_rounds(),
         }
 
 class Introduction(Page):
@@ -337,7 +369,7 @@ class Introduction(Page):
 
 
 class Task(Page):
-    timeout_seconds = 60
+    timeout_seconds = 40
     form_model = 'player'
     form_fields = [
         'num_entered_1', 
@@ -356,6 +388,9 @@ class Task(Page):
         'num_entered_14',
         'num_entered_15',
     ]
+
+    def is_displayed(self):
+        return self.group.decision == 'Accept'
 
     @staticmethod
     def vars_for_template(player: Player): 
@@ -432,16 +467,20 @@ class ResultsWaitPage(WaitPage):
 class Results(Page):
     # def is_displayed(self):
     #     return self.round_number == Constants.num_rounds
+    timeout_seconds = 15
 
     @staticmethod
     def vars_for_template(player: Player):
         # group = player.group 
         return{
-            'payoff': player.payoff
+            'payoff': player.payoff,
+            'player_in_previous_rounds': player.in_previous_rounds(),
         }
 
 
 class FinalResults(Page):
+    timeout_seconds = 15
+
     def is_displayed(self):
         return self.round_number == Constants.num_rounds
 
@@ -449,7 +488,8 @@ class FinalResults(Page):
     def vars_for_template(player: Player):
         # group = player.group 
         return{
-            'payoff': player.participant.payoff
+            'payoff': player.participant.payoff,
+            'player_in_previous_rounds': player.in_previous_rounds(),
         }
 
 # page_sequence = [Introduction, Task, Results]

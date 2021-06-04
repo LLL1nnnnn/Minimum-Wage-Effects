@@ -1,4 +1,7 @@
 {% extends "global/Page.html" %}
+{% block styles %}
+    <link href="{% static 'min_wage_effect/css/custom.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block title %}Minimal Acceptable Wage{% endblock %}
 {% block content %}
@@ -20,6 +23,23 @@
     <p>
         {{ form.reservation }}
     </p>
+    <h2>Round history</h2>
+    <table class="table">
+        <tr>
+            <th>Round</th>
+            <th>Wage Offer</th>
+            <th>Decision</th>
+            <th>Payoff</th>
+        </tr>
+        {% for p in player_in_previous_rounds %}
+            <tr>
+                <td>{{ p.round_number }}</td>
+                <td>{{ p.group.offer }}</td>
+                <td>{{ p.group.decision }}</td>
+                <td>{{ p.payoff }}</td>
+            </tr>
+        {% endfor %}
+    </table>
     <p>
     {% next_button %}
     </p>
