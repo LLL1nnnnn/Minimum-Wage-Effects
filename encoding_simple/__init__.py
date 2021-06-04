@@ -3,6 +3,7 @@ from otree.api import *
 c = Currency
 import random 
 
+author = """ Yilin Li """
 
 doc = """
 Real Effort Task of Encoding Letters
@@ -146,7 +147,7 @@ class Introduction(Page):
 
 
 class Task(Page):
-    timeout_seconds = 60
+    timeout_seconds = 40
     form_model = 'player'
     form_fields = [
         'num_entered_1', 
